@@ -1,26 +1,49 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-bool v(long long n, long long x, long long y, long long t) {
-    return (t / x + t / y) >= n;
+bool canFormSubsequence(const string& s, const string& t, const vector<int>& a, int mid) {
+    vector<bool> bad(s.size() + 1, false);
+    for (int i = 0; i < mid; i++) {
+        bad[a[i]] = true;
+    }
+
+    int j = 0;
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == t[j] && !bad[i + 1]) {
+            ++j;
+        }
+        if (j == t.size()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 int main() {
-    long long n, x, y;
-    cin >> n >> x >> y;
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    if (x > y) 
-    swap(x, y);
+    string s, t;
+    cin >> s >> t;
+    int n = s.size();
+    int m = t.size();
+    
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
 
-    long long left = 0, right = n * x;
-    while (left < right) {
-        long long mid = (left + right) / 2;
-        if (v(n, x, y, mid)) {
-            right = mid;
+    int left = 0, right = n, ans = 0;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (canFormSubsequence(s, t, a, mid)) {
+            ans = mid;
+            left = mid + 1;
         } 
         else {
-            left = mid + 1;
+            right = mid - 1;
         }
     }
-    cout << left << endl;
+
+    cout << ans << '\n';
 }
